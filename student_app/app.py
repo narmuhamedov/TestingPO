@@ -1,7 +1,14 @@
 import flet as ft
-
+import subprocess
 # Предполагаем, что функция называется get_students (исправлена опечатка)
 from student_service import ( add_student, get_students, update_student, delete_student ) 
+import os
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEST_FILE = os.path.join(BASE_DIR, 'test_student.py')
+
+
 
 def main(page: ft.Page):
     page.title = 'Студенты'
@@ -52,6 +59,8 @@ def main(page: ft.Page):
                 int(age.value), 
                 int(score.value)
             )
+            subprocess.run(['pytest', TEST_FILE, '-v'])
+            
             name.value = ''
             surname.value = ''
             age.value = ''
