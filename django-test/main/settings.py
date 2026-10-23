@@ -129,3 +129,5 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+TEST_RUNNER = 'blog.tests.ReportingRunner'
