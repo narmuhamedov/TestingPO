@@ -7,6 +7,9 @@
 </head>
 <body>
     <h1>Список блогов</h1>
+
+    <a href="{% url 'create_blog' %}">Добавить блог</a>
+
     <ul>
         {% for i in blog %}
         <li>
@@ -14,6 +17,8 @@
             <img src="{{ i.image.url }}" alt="" width="300" height="300">
             <p>{{ i.created_at }}</p>
             <a href="/blog_list/{{ i.id }}/">Подробнее</a>
+            <a href="/blog_list/{{ i.id }}/update/">Редактировать</a>
+            <a href="/blog_list/{{ i.id }}/delete/">Удалить</a>
         </li>
         {% endfor %}
     </ul>

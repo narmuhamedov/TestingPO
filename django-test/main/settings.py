@@ -130,4 +130,4 @@ MAILERS = {
     },
 }
 
-TEST_RUNNER = 'blog.tests.ReportingRunner'
+#TEST_RUNNER = 'blog.tests.ReportingRunner'
