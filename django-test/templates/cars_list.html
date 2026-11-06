@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список автомобилей</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+        .car-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .car-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .car-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 8px;
+        }
+        .car-info {
+            margin: 6px 0;
+            font-size: 0.95em;
+        }
+        .car-info span.label {
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+        .vin {
+            font-family: monospace;
+            background: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .categories {
+            margin-top: 12px;
+        }
+        .category-badge {
+            display: inline-block;
+            background: #e8f4fd;
+            color: #2980b9;
+            border: 1px solid #b3d9f2;
+            border-radius: 12px;
+            padding: 3px 10px;
+            font-size: 0.85em;
+            margin: 3px 4px 3px 0;
+        }
+        .description {
+            margin-top: 12px;
+            color: #555;
+            font-size: 0.9em;
+            font-style: italic;
+            border-left: 3px solid #3498db;
+            padding-left: 10px;
+        }
+        .date {
+            margin-top: 12px;
+            font-size: 0.8em;
+            color: #95a5a6;
+            text-align: right;
+        }
+
+        /* --- Комментарии --- */
+        .comments-section {
+            margin-top: 18px;
+            border-top: 1px dashed #dcdfe3;
+            padding-top: 14px;
+        }
+        .comments-title {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+        .comment {
+            background: #fafbfc;
+            border-left: 3px solid #f1c40f;
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .comment-mark {
+            color: #f39c12;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        .comment-date {
+            font-size: 0.75em;
+            color: #95a5a6;
+        }
+        .comment-text {
+            font-size: 0.9em;
+            color: #444;
+        }
+        .no-comments {
+            font-size: 0.85em;
+            color: #b2bec3;
+            font-style: italic;
+        }
+
+        .empty {
+            text-align: center;
+            color: #95a5a6;
+            font-size: 1.2em;
+            padding: 40px;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🚗 Список автомобилей</h1>
+
+    <div class="cars-grid">
+        {% for c in car %}
+            <div class="car-card">
+                <div class="car-title">{{ c.title }}</div>
+
+                <div class="car-info">
+                    <span class="label">VIN:</span>
+                    <span class="vin">{{ c.vin_code }}</span>
+                </div>
+
+                <div class="car-info">
+                    <span class="label">Владелец:</span> {{ c.person }}
+                </div>
+
+                {% if c.description %}
+                    <div class="description">{{ c.description }}</div>
+                {% endif %}
+
+                {% if c.categories.all %}
+                    <div class="categories">
+                        <span class="label">Категории:</span><br>
+                        {% for cat in c.categories.all %}
+                            <span class="category-badge">{{ cat.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="date">Добавлено: {{ c.created_at|date:"d.m.Y" }}</div>
+
+                <!-- ================= КОММЕНТАРИИ ================= -->
+                <div class="comments-section">
+                    <div class="comments-title">
+                        💬 Комментарии
+                        ({{ c.commentcar_set.count }})
+                    </div>
+
+                    {% for comment in c.commentcar_set.all %}
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-mark">
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= comment.mark %}⭐{% else %}☆{% endif %}
+                                    {% endfor %}
+                                    {{ comment.mark }}/5
+                                </span>
+                                <span class="comment-date">{{ comment.created_at|date:"d.m.Y" }}</span>
+                            </div>
+                            <div class="comment-text">{{ comment.description }}</div>
+                        </div>
+                    {% empty %}
+                        <div class="no-comments">Комментариев пока нет</div>
+                    {% endfor %}
+                </div>
+                <!-- =============================================== -->
+
+            </div>
+        {% empty %}
+            <div class="empty">Пока нет ни одного автомобиля 😕</div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
